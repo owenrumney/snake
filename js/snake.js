@@ -72,7 +72,7 @@ Snake.prototype.move = function () {
     }
 
     this.segments.map(moveSegment);
-}
+};
 
 Snake.prototype.changeDirection = function (newDirection) {
 
