@@ -1,9 +1,8 @@
-function Segment(size) {
-    this.position = new Point(0, 0);
-    this.size = size == null ? 10 : size;
-    this.next = null;
-    this.axis = 1;
-    this.direction = 1;
+function Segment(x, y, axis, direction, size) {
+    this.position = new Point(x, y);
+    this.size = size;
+    this.axis = axis;
+    this.direction = direction;
     this.pivotPoints = [];
     this.currentPivot =null;
 }

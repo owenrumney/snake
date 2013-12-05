@@ -1,19 +1,48 @@
 window.onload = function () {
     var canvas = document.getElementById('playboard');
+    if (!canvas){
+        return;
+    }
     var ctx = canvas.getContext('2d');
-    var snake = new Snake(5, canvas);
+    var snake = new Snake(2, canvas);
+    var food = new Food(0, 0);
+
+
+    food.randomPosition(canvas.width, canvas.height);
+
+    var fps = 60;
+    var now;
+    var then = Date.now();
+    var interval = 1000 / fps;
+    var delta;
+
+
     snake.setPosition(150, 100);
     snake.draw(ctx);
-    var counter = 0;
-    var direction = 0;
 
-    function move() {
-        snake.move();
-        snake.draw(ctx);
-        requestAnimFrame(move);
+
+    function animate() {
+
+        now = Date.now();
+        delta = now - then;
+
+        if (delta > interval) {
+
+            then = now - (delta % interval);
+
+            snake.detectCollisions(food, function () {
+                food.randomPosition(canvas.width, canvas.height);
+                snake.grow();
+            });
+            snake.move();
+            snake.draw(ctx);
+            food.draw(ctx);
+        }
+
+        requestAnimFrame(animate);
     }
-    requestAnimFrame(move);
-    move();
+
+    animate();
 
     document.onkeyup = function (e) {
         switch (e.keyCode) {
@@ -34,7 +63,8 @@ window.onload = function () {
 }
 
 window.requestAnimFrame = (function (callback) {
-    return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
+    return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
         function (callback) {
             window.setTimeout(callback, 1000 / 60);
         };
